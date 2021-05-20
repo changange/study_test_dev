@@ -1,0 +1,13 @@
+
+format：
+    1、title 、desc 、owner   不写就报错
+    2、警告信息，可以不写，但是写了 warning，里边的值就不能为空
+    3、检查点，必须写
+
+driver
+    1、执行指定包、或者类
+    2、发送测试报告
+
+alarm
+    1、拿到报警、预警信息
+        1）、test->format->case1

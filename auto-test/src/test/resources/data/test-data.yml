@@ -1,0 +1,22 @@
+#整体是个list，list里边是个map
+- orderDetail:
+    orderId: 123
+    orderInfo: "hello"
+    amount: 25616
+    payInfo:
+      id: 121212
+      payId: "haha"
+  accountInfo:
+    account: 456
+    accountName: "hehe"
+
+- orderDetail:
+    orderId: 1111
+    orderInfo: "gengchangan"
+    amount: 102
+    payInfo:
+      id: 343434
+      payId: "heheheheoooooo"
+  accountInfo:
+    account: "456"
+    accountName: "hehe"
