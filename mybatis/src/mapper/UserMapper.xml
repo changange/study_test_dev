@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+    namespace属性：指定当前mapper配置文件的唯一标识符
+        如果是纯配置文件的方式，没有接口，只可以随便写
+        如果是配置文件+接口的方式，值必须是对应的接口全名
+-->
+<mapper namespace="dao.UserDao">
+    <!--
+        resultMap:定义结果的映射，将数据库的字段与对象的属性一一映射
+            id：指定resultMap的唯一标识符
+            type:指定映射的对象映射
+    -->
+    <resultMap id="userMap" type="User">
+        <!--
+            id：配置主键映射
+            result：配置其他映射
+                property:指定映射的属性名
+                column：指定映射的字段名
+        -->
+        <id property="id" column="user_id"></id>
+        <result property="username" column="user_username"></result>
+        <result property="password" column="user_password"></result>
+        <result property="phone" column="user_phone"></result>
+        <result property="address" column="user_address"></result>
+    </resultMap>
+
+    <!--
+        sql：用来定义SQL代码段，便于复用
+            ID属性：指定该SQL代码段的唯一标识符
+    -->
+    <sql id="userColumn">
+        id,
+        username,
+        password,
+        phone,
+        address
+    </sql>
+    <!--
+        insert：用来执行添加操作
+            id：表示当前方法名
+                如果是纯配置文件的方式，没有接口，只可以随便写，但是要唯一
+                如果是配置文件+接口的方式，值必须与接口中的方法名相同
+            parameterType:表示方法参数的类型
+                如果参数是对象：使用类的全名
+                如果参数是普通参数：使用mybatis中的别名
+            标签体：编写SQL语句
+                使用#{XXX}表示占位符
+                如果参数是对象：则xxx为对象的属性名
+                如果参数是普通数据：则xxx为参数名
+    -->
+    <insert id="insertUser" parameterType="User">        <!--User：别名-->
+        insert into
+            t_user
+                (username,password,phone,address)
+            values
+                (#{username},#{password},#{phone},#{address})
+    </insert>
+
+    <!--
+        useGeneratedKeys：设置保存时是否返回主键，取值：两个
+            false：表示不返回，默认值
+            true：表示返回主键，会自动将返回主键绑定到参数对象的主键属性中
+        keyProperty：指定对象的那个属性为主键属性，即主键所映射的属性，必须指定
+    -->
+    <insert id="insert" parameterType="User" useGeneratedKeys="true" keyProperty="id">
+        insert into
+            t_user
+                (username,password,phone,address)
+        values
+                (#{username},#{password},#{phone},#{address})
+    </insert>
+
+    <!--
+        update：执行修改操作
+    -->
+    <update id="updateUser" parameterType="User">
+        update t_user
+            set username=#{username},
+                password=#{password},
+                phone=#{phone},
+                address=#{address}
+        where
+            id=#{id}
+    </update>
+
+    <!--
+        删除操作
+    -->
+    <update id="deleteById" parameterType="int">
+        delete from t_user
+        where id=#{id}
+    </update>
+    
+    <!--
+        select:查询操作
+            resultType:返回结果的类型
+                如果是返回是一个对象，会自动映射
+                映射条件：查询结果的字段名必须与对象的属性名相同
+    -->
+    <select id="selectById" parameterType="int" resultType="User">
+        select
+            id,username,password,phone,address
+        from
+            t_user
+        where id=#{id}
+    </select>
+
+    <!--
+        查询返回list
+        但是list里边是User，所以返回的对象也就是User
+    -->
+    <select id="selectAll" resultType="User">
+        <!--
+            include：用于引用SQL代码段
+                refid：指定要引用的SQL代码段的ID值
+        -->
+        select
+            <include refid="userColumn"></include>
+        from
+            t_user
+    </select>
+
+    <!--
+        方式一：使用别名，为查询结果的每个字段指定别名，与对象的属性名相同
+                此时就相当于是自动映射
+    -->
+    <select id="selectById2" parameterType="int" resultType="User">
+        select
+            user_id id,
+               user_username username,
+               user_password  password,
+               user_phone phone,
+               user_address address
+        from
+            t_user2
+        where
+            user_id=#{id}
+    </select>
+
+
+    <!--    手动映射
+        resultMap：引用一个ResultMap，使用ResultMap进行手动映射
+            其值为一存在的某一个resultMap的id值
+    -->
+    <select id="selectById3" parameterType="int" resultMap="userMap">
+        select
+            user_id,
+            user_username,
+            user_password ,
+            user_phone,
+            user_address
+        from
+            t_user2
+        where
+            user_id=#{id}
+    </select>
+
+    <!--多参数查询-->
+    <!--
+        方式1
+        使用参数的索引：索引从0开始，如：#{0}表示第一个参数
+    -->
+    <select id="selectByUsernameAndPassword" resultType="User">
+        select <include refid="userColumn"></include>
+        from t_user
+        where username=#{0}  and password=#{1}
+    </select>
+
+    <!--
+        方式2
+        使用注解：@Param()
+    -->
+    <select id="selectByUsernameAndPassword2" resultType="User">
+        select <include refid="userColumn"></include>
+        from t_user
+        where username=#{username}  and password=#{password}
+    </select>
+
+    <!--
+        方式3
+        使用对象方式
+        parameterType：这个参数类型可以不用写
+
+        如果参数很多，或者查询模糊匹配和年龄最大，最小的时候，封装一个VO类  如：vo.UserParam
+    -->
+    <select id="selectByUsernameAndPassword3" parameterType="User" resultType="User">
+        select <include refid="userColumn"></include>
+        from t_user
+        where username=#{username}  and password=#{password}
+    </select>
+
+    <!--
+        方式4
+        多个参数封装成map集合，在#{}占位符中根据key获取value
+        parameterType=：不知道穿啥值，就不穿了
+    -->
+    <select id="selectByUsernameAndPassword4"  resultType="User">
+        select <include refid="userColumn"></include>
+        from t_user
+        where username=#{username}  and password=#{password}
+    </select>
+
+    <!--模糊查询-->
+    <!--
+        方式1
+        模糊查询，手动拼接
+    -->
+    <select id="selectByUsername" resultType="User">
+        select <include refid="userColumn"></include>
+        from t_user
+        where username like #{username}
+    </select>
+
+    <!--
+        方式2
+        使用bind堆参数进行额外处理
+    -->
+    <select id="selectByUsername2" resultType="User">
+        select <include refid="userColumn"></include>
+        from t_user
+        <!--
+            bind：创建一个变量，并为其绑定值
+                name：指定变量名字
+                value：指定要绑定的值,可以使用_parameter获取当前方法的参数
+        -->
+        <bind name="abc" value="'%'+_parameter+'%'"/>
+        where username like #{abc}
+    </select>
+
+
+    <!--动态SQL-->
+    <!--
+        if：用来进行条件判断
+            test：判断表达式的值，如果为true，则拼接片段，否则不拼接
+    -->
+    <select id="selectByParams" parameterType="User" resultType="User">
+        select <include refid="userColumn"></include>
+        from t_user
+        where 1=1
+        <if test="username !=null and username !=''">
+            and username=#{username}
+        </if>
+        <if test="password !=null and password !=''">
+            and password=#{password}
+        </if>
+        <if test="phone !=null and phone !=''">
+            and phone=#{phone}
+        </if>
+        <if  test="address !=null and address !=''">
+            and address=#{address}
+        </if>
+    </select>
+
+    <!--
+        choose:条件的选择，只会拼接一个SQL
+            when:当什么时候
+                test：判断表达式里边的值，true：拼接SQL片段，此时就不再拼接其他的when
+            otherwise:前边都不成立，拼接这个
+    -->
+    <select id="selectByParams2" parameterType="USer" resultType="User">
+        select <include refid="userColumn"></include>
+        from t_user
+        where
+        <choose>
+            <when test="username !=null and username !=''">
+                and username=#{username}
+            </when>
+            <when test="password !=null and username !=''">
+                and password=#{password}
+            </when>
+            <when test="phone !=null and phone !=''">
+                and phone=#{phone}
+            </when>
+            <when test="address !=null and address !=''">
+                and address=#{address}
+            </when>
+            <otherwise>
+                1=1
+            </otherwise>
+        </choose>
+    </select>
+
+    <!--
+        where：一般结合if或choose一起使用
+            作用：1、自动添加where关键字
+                   2、删除SQL片段的第一个连接关键字。如：and  or
+                   3、如果没有拼接任何SQL片段，则不会添加where关键字
+    -->
+    <select id="selectByParams3">
+        select <include refid="userColumn"/>
+        from t_user
+        <where>
+            <if test="username !=null and username !=''">
+                and username=#{username}
+            </if>
+            <if test="password !=null and password !=''">
+                and password=#{password}
+            </if>
+            <if test="phone !=null and phone !=''">
+                and phone=#{phone}
+            </if>
+            <if  test="address !=null and address !=''">
+                and address=#{address}
+            </if>
+        </where>
+    </select>
+
+    <!--
+        set属性：一般结合if或choose一起使用
+            作用：1、添加set关键字
+                2、删除SQL片段末尾的逗号
+    -->
+    <update id="updateUser2" parameterType="User">
+        update t_user
+        <set>
+            <if test="username !=null and username !=''">
+                username=#{username},
+            </if>
+            <if test="password !=null and password !=''">
+                password=#{password},
+            </if>
+            <if test="phone !=null and phone !=''">
+                phone=#{phone},
+            </if>
+            <if  test="address !=null and address !=''">
+                address=#{address},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <!--
+        trim：
+            作用：1、在开头prefix或者末尾suffix添加特定的前缀或者后缀
+                2、删除开头prefixOverrides 或者末尾suffixOverrides特定内容
+    -->
+    <select id="selectByParams4" parameterType="USer" resultType="User">
+        select <include refid="userColumn"/>
+        from t_user
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="username !=null and username !=''">
+                and username=#{username}
+            </if>
+            <if test="password !=null and password !=''">
+                and password=#{password}
+            </if>
+            <if test="phone !=null and phone !=''">
+                and phone=#{phone}
+            </if>
+            <if  test="address !=null and address !=''">
+                and address=#{address}
+            </if>
+        </trim>
+    </select>
+
+    <!--
+        trim：完成跟新操作
+    -->
+    <update id="updateUser3" parameterType="User">
+        update t_user
+        <trim prefix="set" suffixOverrides=",">
+            <if test="username !=null and username !=''">
+                username=#{username},
+            </if>
+            <if test="password !=null and password !=''">
+                password=#{password},
+            </if>
+            <if test="phone !=null and phone !=''">
+                phone=#{phone},
+            </if>
+            <if  test="address !=null and address !=''">
+                address=#{address},
+            </if>
+        </trim>
+        where id=#{id}
+    </update>
+
+
+
+    <!--
+        foreach：当参数是集合时，用来对集合进行遍历操作，一般用在in条件中
+            collection：要遍历的集合(传的list：就是list   传的是map：就是map    传的array:就是array)
+            item：迭代的变量，自己写
+            open属性：遍历前的添加的字符串   也就是说：（1,3,4,2），就是(
+            close属性：遍历后添加的字符串    也就是说：（1,3,4,2）,就是)
+            separator：分割符
+            index：当前迭代元素的索引，一般不写
+    -->
+    <select id="selectByIds" parameterType="list" resultType="User">
+        select <include refid="userColumn"></include>
+        from t_user
+        where id in
+        <foreach collection="list" item="id" open="(" close=")" separator="," index="">
+            #{id}
+        </foreach>
+    </select>
+
+</mapper>

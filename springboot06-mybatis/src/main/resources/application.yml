@@ -1,0 +1,20 @@
+#配置DataSourcespring:
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://212.64.42.233:3306/springboot?useUnicode=true&characterEncoding=utf8
+    username: root
+    password: 320517gca
+    initialSize: 5
+    maxActive: 100
+    minIdle: 5
+    maxWait: 5000
+
+#配置mybatis
+mybatis:
+  type-aliases-package: com.itany.pojo    #配置别名所在的包
+  mapper-locations: classpath:mapper/*.xml   #映射文件的路径
+
+#配置分页，告诉底层是什么数据库
+pagehelper:
+  helper-dialect: mysql

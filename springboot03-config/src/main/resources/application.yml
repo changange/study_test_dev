@@ -1,0 +1,56 @@
+server:
+  servlet:
+    context-path: /springboot03
+
+spring:
+  profiles:
+    active: dev
+
+
+#通过配置文件注入值
+user:
+  age: 19
+  status: true
+  birthday: 2018/2/14
+  address:
+    province: 江苏省
+    city: 南京市
+  lists:
+    - list1
+    - list2
+    - list3
+    - list4
+  maps: {k1: v1,k2: v2,k3: v3}
+  username: admin
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: test
+
+server:
+  port: 8881
+
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+server:
+  port: 8882
+
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+server:
+  port: 8883

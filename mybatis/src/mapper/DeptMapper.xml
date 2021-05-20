@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.DeptDao">
+
+    <resultMap id="deptMapper" type="Dept">
+        <id property="id" column="deptId"/>
+        <result property="name" column="deptName"/>
+    </resultMap>
+
+    <!--一对多-->
+    <resultMap id="deptMap" type="Dept">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <!--
+            collection：用于配置对象集合属性，  适合一对多
+                property：当前需要映射的集合属性
+                ofType:用来配置集合属性中对象的类型
+                标签体：对集合属性中对象所在的表进行映射
+        -->
+        <collection property="emps" ofType="Emp">
+            <id property="id" column="empId"/>
+            <result property="name" column="empName"/>
+            <result property="salary" column="salary"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="deptMap2" type="Dept">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <!--
+            resultMap：引用其他 的resultMap属性
+        -->
+        <collection property="emps" ofType="Emp" resultMap="dao.EmpDao.empMap"/>
+    </resultMap>
+
+    <resultMap id="deptMap3" type="Dept">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <!--
+            select属性
+        -->
+        <collection property="emps" ofType="Emp" select="dao.EmpDao.selectByDeptId" column="id"/>
+    </resultMap>
+
+
+
+    <sql id="deptColumn">
+        d.id,
+        d.name,
+        e.id empId,
+        e.name empName,
+        e.salary
+    </sql>
+    
+    <insert id="insertDept" parameterType="Dept" useGeneratedKeys="true" keyProperty="id">
+        insert into t_dept
+        (name)
+        values
+        (#{name})
+    </insert>
+
+    <!--为了配合第三种方式一个select调用一个select-->
+    <select id="selectById" parameterType="int" resultType="Dept">
+        select id,name
+        from t_dept
+        where id=#{id}
+    </select>
+    
+    
+    <!--一对多-->
+    <!--方式1  直接使用集合属型-->
+<!--    <select id="-&#45;&#45;selectAll-&#45;&#45;" resultMap="deptMap">-->
+<!--        select <include refid="deptColumn"></include>-->
+<!--        from t_dept d-->
+<!--            left join t_emp e-->
+<!--            on d.id=e.dept_id-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash;方式2 使用集合的嵌套结果 &ndash;&gt;-->
+<!--    <select id="-&#45;&#45;selectAll-&#45;&#45;" resultMap="deptMap2">-->
+<!--        select <include refid="deptColumn"></include>-->
+<!--        from t_dept d-->
+<!--        left join t_emp e-->
+<!--        on d.id=e.dept_id-->
+<!--    </select>-->
+
+    <!--方式3 使用集合的嵌套结果（多个单表查询）-->
+    <select id="selectAll" resultMap="deptMap3">
+        select id,name
+        from t_dept
+    </select>
+</mapper>

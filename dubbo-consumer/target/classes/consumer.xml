@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://dubbo.apache.org/schema/dubbo"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://dubbo.apache.org/schema/dubbo http://dubbo.apache.org/schema/dubbo/dubbo.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <dubbo:application name="dubbo-consumer"/>
+
+    <dubbo:registry address="zookeeper://212.64.42.233:2181" timeout="30000"/>
+<!--    <dubbo:registry protocol="zookeeper" address="212.64.42.233:2181,212.64.42.233:2182,212.64.42.233:2183"/>-->
+
+    <!--指定引用的服务
+        id:就是给引用的服务起个id，因为两个消费者服务和生产者服务不在同一个电脑上
+            给bean里边的接口参数赋值
+    -->
+    <!--注解版，这个也不要了-->
+<!--    <dubbo:reference id="userService" interface="com.itany.service.UserService"/>-->
+    <!--这个引用具体到了方法-->
+    <!--retries：重试次数    check：启动时是否检查生产者启动   url:直连服务的提供者-->
+    <dubbo:reference id="userService" interface="com.itany.service.UserService" retries="3" check="false" url="dubbo://127.0.0.1:8889">
+<!--    <dubbo:reference id="userService" interface="com.itany.service.UserService" retries="6" check="false">-->
+        <dubbo:method name="findById"/>
+    </dubbo:reference>
+
+    <!--注解版，不用写bean了  用扫包-->
+    <bean class="com.itany.controller.UserController">
+        <property name="userService" ref="userService"/>
+    </bean>
+
+    <!--dubbo的扫包-->
+<!--    <dubbo:annotation package="com.itany.controller"/>-->
+
+<!--    <context:component-scan base-package="com.itany.controller"/>-->
+
+
+    <!--消费者全局配置   针对所有生效-->
+<!--    <dubbo:consumer timeout="6000"/>-->
+</beans>

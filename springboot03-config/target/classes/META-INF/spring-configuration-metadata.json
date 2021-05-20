@@ -1,0 +1,47 @@
+{
+  "groups": [
+    {
+      "name": "user",
+      "type": "com.itany.bean.User",
+      "sourceType": "com.itany.bean.User"
+    }
+  ],
+  "properties": [
+    {
+      "name": "user.address",
+      "type": "com.itany.bean.Address",
+      "sourceType": "com.itany.bean.User"
+    },
+    {
+      "name": "user.age",
+      "type": "java.lang.Integer",
+      "sourceType": "com.itany.bean.User"
+    },
+    {
+      "name": "user.birthday",
+      "type": "java.util.Date",
+      "sourceType": "com.itany.bean.User"
+    },
+    {
+      "name": "user.lists",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "com.itany.bean.User"
+    },
+    {
+      "name": "user.maps",
+      "type": "java.util.Map<java.lang.String,java.lang.Object>",
+      "sourceType": "com.itany.bean.User"
+    },
+    {
+      "name": "user.status",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.itany.bean.User"
+    },
+    {
+      "name": "user.username",
+      "type": "java.lang.String",
+      "sourceType": "com.itany.bean.User"
+    }
+  ],
+  "hints": []
+}

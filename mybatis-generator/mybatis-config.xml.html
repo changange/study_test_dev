@@ -1,0 +1,70 @@
+<html>
+<head>
+<title>mybatis-config.xml</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #e8bf6a;}
+.s1 { color: #bababa;}
+.s2 { color: #6a8759;}
+.s3 { color: #a9b7c6;}
+.s4 { color: #808080;}
+.s5 { color: #6d9cbe;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+mybatis-config.xml</font>
+</center></td></tr></table>
+<pre><span class="s0">&lt;?</span><span class="s1">xml version</span><span class="s2">=&quot;1.0&quot; </span><span class="s1">encoding</span><span class="s2">=&quot;UTF-8&quot; </span><span class="s0">?&gt;</span>
+<span class="s0">&lt;!DOCTYPE </span><span class="s1">configuration </span><span class="s0">PUBLIC </span><span class="s2">&quot;-//mybatis.org//DTD Config 3.0//EN&quot;</span>
+        <span class="s2">&quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;</span><span class="s0">&gt;</span>
+<span class="s0">&lt;configuration&gt;</span>
+    <span class="s4">&lt;!--</span>
+        <span class="s4">environments：配置当前工程中可能使用到的数据库环境如：测试、线上 
+            default：指定默认使用的环境   值取就是某一个environment的ID 
+    --&gt;</span>
+    <span class="s0">&lt;environments </span><span class="s1">default</span><span class="s2">=&quot;hello&quot;</span><span class="s0">&gt;</span>
+
+        <span class="s4">&lt;!--</span>
+            <span class="s4">environment：某一个数据库环境，可以有多个 
+                id：指定改环境的唯一标识符 
+        --&gt;</span>
+        <span class="s0">&lt;environment </span><span class="s1">id</span><span class="s2">=&quot;hello&quot;</span><span class="s0">&gt;</span>
+
+            <span class="s4">&lt;!--</span>
+                <span class="s4">transactionManager：配置事务的管理器 
+                    type：事务管理的类型   取值有两种 
+                        jdbc：使用简单的jdbc事务操作，R如：开启、提交、回滚 
+                                在mybatis中，默认是关闭自动提交事务的 
+                        managed：将事务交给其他框架、容器处理，如：spring 
+                                mybatis不负责事务 
+            --&gt;</span>
+            <span class="s0">&lt;transactionManager </span><span class="s1">type</span><span class="s2">=&quot;jdbc&quot;</span><span class="s0">&gt;&lt;/transactionManager&gt;</span>
+
+            <span class="s4">&lt;!--</span>
+                   <span class="s4">dataSource：配置数据库的连接信息 
+                        type：配置数据源的类型，取值有三种 
+                            UNPOOLED：简单的JDBC配置，没有使用连接池   相当于：DriverManger.getConnection(url,username,passweord) 
+                            POOLED：使用连接池技术 
+                            JNDI：通过外部容器获取连接。    例如tomcat 
+            --&gt;</span>
+            <span class="s0">&lt;dataSource </span><span class="s1">type</span><span class="s2">=&quot;POOLED&quot;</span><span class="s0">&gt;</span>
+                <span class="s4">&lt;!--数据库的连接属性--&gt;</span>
+                <span class="s0">&lt;property </span><span class="s1">name</span><span class="s2">=&quot;driver&quot; </span><span class="s1">value</span><span class="s2">=&quot;com.mysql.jdbc.Driver&quot;</span><span class="s0">/&gt;</span>
+                <span class="s4">&lt;!--&amp; 只能这样写  &amp;amp;--&gt;</span>
+                <span class="s0">&lt;property </span><span class="s1">name</span><span class="s2">=&quot;url&quot; </span><span class="s1">value</span><span class="s2">=&quot;jdbc:mysql://212.64.42.233:3306/test?useUnicode=true</span><span class="s5">&amp;amp;</span><span class="s2">characterEncoding=utf8&quot;</span><span class="s0">/&gt;</span>
+                <span class="s0">&lt;property </span><span class="s1">name</span><span class="s2">=&quot;username&quot; </span><span class="s1">value</span><span class="s2">=&quot;root&quot;</span><span class="s0">/&gt;</span>
+                <span class="s0">&lt;property </span><span class="s1">name</span><span class="s2">=&quot;password&quot; </span><span class="s1">value</span><span class="s2">=&quot;320517gca&quot;</span><span class="s0">/&gt;</span>
+            <span class="s0">&lt;/dataSource&gt;</span>
+        <span class="s0">&lt;/environment&gt;</span>
+        
+<span class="s4">&lt;!--        &lt;environment id=&quot;world&quot;&gt;--&gt;</span>
+<span class="s4">&lt;!--            &lt;transactionManager type=&quot;&quot;&gt;&lt;/transactionManager&gt;--&gt;</span>
+<span class="s4">&lt;!--            &lt;dataSource type=&quot;&quot;&gt;&lt;/dataSource&gt;--&gt;</span>
+<span class="s4">&lt;!--        &lt;/environment&gt;--&gt;</span>
+    <span class="s0">&lt;/environments&gt;</span>
+<span class="s0">&lt;/configuration&gt;</span></pre>
+</body>
+</html>

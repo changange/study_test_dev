@@ -1,0 +1,13 @@
+server:
+  port: 8881
+
+dubbo:
+  application:
+    name: bootspring-provider
+  registry:
+    address: zookeeper://212.64.42.233:2181
+  protocol:
+    name: dubbo
+    port: 8889
+  monitor:
+    protocol: registry  #配置监控中心，从监控中心中查找地址

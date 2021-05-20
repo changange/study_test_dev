@@ -1,0 +1,28 @@
+<html>
+<head>
+<title>log4j.properties</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #808080;}
+.s2 { color: #6a8759;}
+.s3 { color: #a9b7c6;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+log4j.properties</font>
+</center></td></tr></table>
+<pre><span class="s0">log4j.rootLogger</span><span class="s1">=</span><span class="s2">debug,console</span>
+<span class="s0">log4j.appender.console</span><span class="s1">=</span><span class="s2">org.apache.log4j.ConsoleAppender</span>
+<span class="s0">log4j.appender.console.layout</span><span class="s1">=</span><span class="s2">org.apache.log4j.PatternLayout</span>
+<span class="s0">log4j.appender.console.layout.ConversionPattern</span><span class="s1">=</span><span class="s2">%-5p %m%n</span>
+
+<span class="s0">log4j.logger.java.sql.ResultSet</span><span class="s1">=</span><span class="s2">INFO</span>
+<span class="s0">log4j.logger.org.apache</span><span class="s1">=</span><span class="s2">INFO</span>
+<span class="s0">log4j.logger.java.sql.PreparedStatemant</span><span class="s1">=</span><span class="s2">DEBUG</span>
+</pre>
+</body>
+</html>

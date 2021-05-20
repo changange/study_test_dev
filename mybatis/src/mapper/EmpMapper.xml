@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.EmpDao">
+    <!--一对多-->
+    <resultMap id="empMap" type="Emp">
+        <id property="id" column="empId"/>
+        <result property="name" column="empName"/>
+        <result property="salary" column="salary"/>
+    </resultMap>
+    
+    
+    
+
+    <!--手动定义映射-->
+    <resultMap id="empMapper" type="Emp">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="salary" column="salary"/>
+        <!--
+            association：配置关联属性，多对一的关系
+                property：当前需要映射的是对象中的哪个属性
+                javaType：指定当前映射的属性的java类型
+               标签体：对当前映射的属性所在的表映射
+        -->
+        <association property="dept" javaType="Dept">  <!--Dept：别名-->
+            <id property="id" column="deptId"/>
+            <result property="name" column="deptName"/>
+        </association>
+    </resultMap>
+
+    <!--手动映射   其他文件里边的映射-->
+    <resultMap id="empMapper2" type="Emp">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="salary" column="salary"/>
+        <!--
+            resultMap：用来引用其他的resultMap映射配置
+                值为：resultMap所在的Mapper文件的namespace.resultMap的id值
+        -->
+        <association property="dept" javaType="Dept" resultMap="dao.DeptDao.deptMapper"/>
+    </resultMap>
+
+    <!--手动映射   其他文件里边的映射-->
+    <resultMap id="empMapper3" type="Emp">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="salary" column="salary"/>
+        <!--
+            select属性：引用其他的slect查询配置
+                值为：select所在Mapper文件的namespace.select的ID值
+            column：当前查询的某列，作为查询条件，传递给引用的select查询配置的参数
+        -->
+        <association property="dept" javaType="Dept" select="dao.DeptDao.selectById" column="dept_id"/>
+    </resultMap>
+
+
+    <sql id="empColumn">
+        e.id,
+        e.name,
+        e.salary,
+        d.id deptId,
+        d.name deptName
+    </sql>
+
+    <insert id="insertEmp" parameterType="Emp">
+        insert into t_emp
+            (name,salary,dept_id)
+        values
+            (#{name},#{salary},#{dept.id})
+    </insert>
+
+    <!--多表查询 多对一-->
+    <!--方式1 -->
+    <select id="selectAll-----" resultMap="empMapper">
+        select  <include refid="empColumn"></include>
+        from t_emp e
+            left join t_dept d
+            on e.dept_id=d.id
+    </select>
+
+    <!--
+        方式2：
+            嵌套属性
+    -->
+    <select id="selectAll-------" resultMap="empMapper2">
+        select  <include refid="empColumn"></include>
+        from t_emp e
+        left join t_dept d
+        on e.dept_id=d.id
+    </select>
+
+    <!--
+        方式3
+            使用关联的嵌套查询
+            association的select属性，引用其他select，通过多个单表查询来实现
+    -->
+    <select id="selectAll" resultMap="empMapper3">
+        select id,name,salary,dept_id
+        from t_emp
+    </select>
+
+
+
+    <!--一对多 配合-->
+    <select id="selectByDeptId" parameterType="int" resultType="Emp">
+        select id,name,salary,dept_id
+        from t_emp
+        where dept_id=#{id}
+    </select>
+
+
+</mapper>

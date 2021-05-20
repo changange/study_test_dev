@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://dubbo.apache.org/schema/dubbo"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://dubbo.apache.org/schema/dubbo http://dubbo.apache.org/schema/dubbo/dubbo.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--配置当前dubbo应用程序的名称,名字可以自定义，但是要唯一
+        一般就写项目名字
+    -->
+    <dubbo:application name="dubbo-provider"/>
+
+    <!--自定注册中心的地址-->
+<!--    <dubbo:registry protocol="zookeeper" address="212.64.42.233:2181,212.64.42.233:2182,212.64.42.233:2183"/>-->
+    <dubbo:registry address="zookeeper://212.64.42.233:2181" timeout="30000"/>
+
+    <!--配置dubbo的协议和端口（通过端口来提供服务，指定一个没有被占用的端口就行）-->
+    <dubbo:protocol name="dubbo" port="8889"/>
+    
+    <!--指定要暴露服务的接口-->
+    <!--指定暴露接口，也可以通过注解-->
+<!--    <dubbo:service interface="com.itany.service.UserService" ref="userService"/>-->
+    <!--具体到放到-->
+    <dubbo:service interface="com.itany.service.UserService" ref="userService" timeout="6000">
+        <dubbo:method name="findById"/>
+    </dubbo:service>
+
+    <!--配置一个bean  定义一个实现类  加入容器中-->
+    <!--使用注解版就把这个注释了，通过自动扫包去添加-->
+    <bean id="userService" class="com.itany.service.impl.UserServiceImpl"/>
+
+    <!--dubbo组件的扫包-->
+<!--    <dubbo:annotation package="com.itany.service.impl"/>-->
+
+    <!--spring 组件的扫包-->
+<!--    <context:component-scan base-package="com.itany.service.impl"/>-->
+
+
+    <!--提供者全局配置-->
+    <dubbo:consumer timeout="6000"/>
+</beans>

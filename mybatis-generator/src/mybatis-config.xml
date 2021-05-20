@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--
+        应用外部的properties文件
+    -->
+    <properties resource="datasource.properties"/>
+
+    <!--
+        配置别名，为当前工程中的某些类指定别名
+    -->
+    <typeAliases>
+        <!--
+            typeAlias:为某个类配置别名
+                type：指定类名
+                alias:类的别名
+        -->
+<!--        <typeAlias type="entity.User" alias="User"/>-->
+
+        <!--
+            package：为某个包下的所有类配置别名
+                name：指定包名，该包下的所有别名 就是其类名(别名不区分大小写)
+        -->
+        <package name="entity"/>
+    </typeAliases>
+
+
+    <plugins>
+        <!-- 配置mybatis分页插件 -->
+        <!-- com.github.pagehelper为PageHelper类所在包名 -->
+        <plugin interceptor="com.github.pagehelper.PageHelper">
+            <!-- 4.0.0以后版本可以不设置该参数 -->
+            <property name="dialect" value="mysql"/>
+            <!-- 该参数默认为false -->
+            <!-- 设置为true时，会将RowBounds第一个参数offset当成pageNum页码使用 -->
+            <!-- 和startPage中的pageNum效果一样-->
+            <property name="offsetAsPageNum" value="true"/>
+            <!-- 该参数默认为false -->
+            <!-- 设置为true时，使用RowBounds分页会进行count查询 -->
+            <property name="rowBoundsWithCount" value="true"/>
+            <!-- 设置为true时，如果pageSize=0或者RowBounds.limit = 0就会查询出全部的结果 -->
+            <!-- （相当于没有执行分页查询，但是返回结果仍然是Page类型）-->
+            <property name="pageSizeZero" value="true"/>
+            <!-- 3.3.0版本可用 - 分页参数合理化，默认false禁用 -->
+            <!-- 启用合理化时，如果pageNum<1会查询第一页，如果pageNum>pages会查询最后一页 -->
+            <!-- 禁用合理化时，如果pageNum<1或pageNum>pages会返回空数据 -->
+            <property name="reasonable" value="false"/>
+            <!-- 3.5.0版本可用 - 为了支持startPage(Object params)方法 -->
+            <!-- 增加了一个`params`参数来配置参数映射，用于从Map或ServletRequest中取值 -->
+            <!-- 可以配置pageNum,pageSize,count,pageSizeZero,reasonable,orderBy,不配置映射的用默认值 -->
+            <!-- 不理解该含义的前提下，不要随便复制该配置 -->
+            <property name="params" value="pageNum=pageHelperStart;pageSize=pageHelperRows;"/>
+            <!-- 支持通过Mapper接口参数来传递分页参数 -->
+            <property name="supportMethodsArguments" value="false"/>
+            <!-- always总是返回PageInfo类型,check检查返回类型是否为PageInfo,none返回Page -->
+            <property name="returnPageInfo" value="none"/>
+        </plugin>
+    </plugins>
+
+
+    <!--
+        environments：配置当前工程中可能使用到的数据库环境如：测试、线上
+            default：指定默认使用的环境   值取就是某一个environment的ID
+    -->
+    <environments default="hello">
+
+        <!--
+            environment：某一个数据库环境，可以有多个
+                id：指定改环境的唯一标识符
+        -->
+        <environment id="hello">
+
+            <!--
+                transactionManager：配置事务的管理器
+                    type：事务管理的类型   取值有两种
+                        jdbc：使用简单的jdbc事务操作，R如：开启、提交、回滚
+                                在mybatis中，默认是关闭自动提交事务的
+                        managed：将事务交给其他框架、容器处理，如：spring
+                                mybatis不负责事务
+            -->
+            <transactionManager type="jdbc"></transactionManager>
+
+            <!--
+                   dataSource：配置数据库的连接信息
+                        type：配置数据源的类型，取值有三种
+                            UNPOOLED：简单的JDBC配置，没有使用连接池   相当于：DriverManger.getConnection(url,username,passweord)
+                            POOLED：使用连接池技术
+                            JNDI：通过外部容器获取连接。    例如tomcat
+            -->
+            <!--
+                一般实际项目中 JDBC的链接信息会单独放在一个文件里
+            -->
+            <dataSource type="POOLED">
+                <!--数据库的连接属性-->
+                <property name="driver" value="${jdbc.driver}"/>
+                <!--& 只能这样写  &amp;-->
+<!--                <property name="url" value="jdbc:mysql://212.64.42.233:3306/mybatis?useUnicode=true&amp;characterEncoding=utf8"/>-->
+                <property name="url" value="${jdbc.url}"/>
+                <property name="username" value="${jdbc.username}"/>
+                <property name="password" value="${jdbc.password}"/>
+            </dataSource>
+        </environment>
+
+        <!--        <environment id="world">-->
+        <!--            <transactionManager type=""></transactionManager>-->
+        <!--            <dataSource type=""></dataSource>-->
+        <!--        </environment>-->
+    </environments>
+
+    <!--
+        注册当前工程中使用的映射文件
+    -->
+    <mappers>
+        <!--
+            mapper:注册某一个mapper文件，可以有多个
+                resource属性：指定映射文件的路径，写的是相对于src的路径，使用正斜杠分割
+        -->
+        <mapper resource="mapper/UserMapper.xml"/>
+    </mappers>
+
+</configuration>

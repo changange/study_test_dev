@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body th:inline="none">
+<!--      th:text：属性默认只能替换aaa的值  要想也显示aaa就是用内链写法-->
+<div th:text="${hello}">aaa</div>
+<!--        转移特殊字符-->
+<div th:utext="${hello}">bbb</div>
+
+<!--内联  -->
+<!--不转移-->
+<div>[[${hello}}]]aaa</div>
+<div>[(${hello}})]bbb</div>
+
+<!--替换指定的HTML原生属性的值-->
+<!---->
+<div id="div1" title="这是个div" th:id="${id}" th:title="${title}">div</div>
+
+<p th:if="${age>=18}">成年</p>
+
+<!--和if相反-->
+<p th:unless="${age<18}">你呢</p>
+
+<!-- 选择-->
+<div th:switch="${role}">
+    <p th:case="admin">管理员</p>
+    <p th:case="teacher">教师</p>
+    <p th:case="student">学生</p>
+    <p th:case="*">啥也不是</p>
+</div>
+
+<!--循环-->
+<ul>
+    <!--        <li th:each="name:${names}" th:text="${name}"></li>-->
+    <Li th:each="name:${names}">[[${name}]]</Li>
+</ul>
+
+<!--------------------->
+<!--readonly：只读-->
+<h3>修改用户信息</h3>
+<form action="modify" method="post" th:object="${user}">
+    编号：<input type="text" th:field="*{id}" readonly> <br>
+    姓名：<input type="text" th:field="*{name}"> <br>
+    年龄：<input type="text" th:field="*{age}"> <br>
+    <input type="submit" value="修改">
+</form>
+
+<!--    引入代码片段-->
+<div th:include="include/header::head"></div>
+<div th:insert="include/footer::copy"></div>
+<div th:replace="include/header::head"></div>
+</body>
+</html>

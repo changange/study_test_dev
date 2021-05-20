@@ -1,0 +1,14 @@
+server:
+  port: 8883
+
+spring:
+  thymeleaf:
+    cache: false
+
+dubbo:
+  application:
+    name: bootspring-consumer
+  registry:
+    address: zookeeper://212.64.42.233:2181
+  monitor:
+    protocol: registry
